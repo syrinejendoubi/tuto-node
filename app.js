@@ -19,7 +19,9 @@ app.get("/", (req, res) => {
 app.use(express.static("public"));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
-
+app.get("/blogs/create", (req, res) => {
+  res.render("create", { title: "Creation" });
+});
 app.get("/about", (req, res) => {
   res.render("about", { title: "About Page" });
 });
