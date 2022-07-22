@@ -1,26 +1,34 @@
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
-
+const blogRoutes = require("./routes/blogRoutes");
+const mongoose = require("mongoose");
+//db config
+const dbURI =
+  "mongodb+srv://syrine16:Syrine16@cluster0.pdnwg.mongodb.net/node-tuto?retryWrites=true&w=majority";
+mongoose
+  .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then((result) => app.listen(3000))
+  .catch((err) => console.log(err));
+//register view engine
 app.set("view engine", "ejs");
-app.listen(3000);
-
 app.get("/", (req, res) => {
-  const blogs = [
-    { title: "emilie find stars", snippet: "lorem lorem kikiki" },
-    { title: "mario find stars", snippet: "lorem lorem kikiki" },
-    { title: "bruno find stars", snippet: "lorem lorem kikiki" },
-  ];
-  res.render("index", { title: "Home", blogs });
+  res.redirect("/blogs");
 });
+//  middleware and static files
+app.use(express.static("public"));
+app.use(morgan("dev"));
+app.use(express.urlencoded({ extended: true }));
+
 app.get("/about", (req, res) => {
   res.render("about", { title: "About Page" });
 });
+
 app.get("/about-us", (req, res) => {
   res.render("about", { title: "About Page" });
 });
-app.get("/blogs/create", (req, res) => {
-  res.render("create", { title: "Creation" });
-});
+//blog routes
+app.use("/blogs", blogRoutes);
 
 //404 page
 app.use((req, res) => {
